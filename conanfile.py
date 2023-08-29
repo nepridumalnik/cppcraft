@@ -6,7 +6,7 @@ from conan.tools.cmake import CMake
 
 
 class ConanRecipt(ConanFile):
-    name = 'Minecraft'
+    name = 'CPPCraft'
 
     settings = [
         'os',
