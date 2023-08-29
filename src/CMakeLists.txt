@@ -8,6 +8,7 @@ set(TARGET cppcraft)
 set(SOURCES
     main.cpp
 
+    subsystems/App.cpp
     subsystems/Window.cpp
     subsystems/GlApi.cpp
     subsystems/Events.cpp

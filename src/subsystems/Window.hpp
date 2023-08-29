@@ -18,6 +18,10 @@ public:
     void SwapBuffers();
 
 private:
+    Window(const Window &) = delete;
+    void operator=(const Window &) = delete;
+
+private:
     GLFWwindow *m_window;
     Events m_event;
 };
