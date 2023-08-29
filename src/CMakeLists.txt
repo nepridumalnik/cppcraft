@@ -1,14 +1,16 @@
 find_package(glew REQUIRED)
 find_package(glfw3 REQUIRED)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(TARGET cppcraft)
 
 set(SOURCES
     main.cpp
-)
 
-set(INCLUDES
-
+    subsystems/Window.cpp
+    subsystems/GlApi.cpp
+    subsystems/Events.cpp
 )
 
 set(LIBRARIES
