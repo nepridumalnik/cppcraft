@@ -39,6 +39,11 @@ void Window::Terminate()
 
 bool Window::ShouldClose()
 {
+    if (m_inputEvent.KeyJPressed(GLFW_KEY_ESCAPE))
+    {
+        return true;
+    }
+
     return glfwWindowShouldClose(m_window);
 }
 
