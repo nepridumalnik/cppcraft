@@ -5,6 +5,8 @@ set(SOURCES
     Window.cpp
     GlApi.cpp
     InputEvents.cpp
+
+    graphics/Shader.cpp
 )
 
 set(LIBRARIES
