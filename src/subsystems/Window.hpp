@@ -1,6 +1,6 @@
 #pragma once
 
-#include <subsystems/Events.hpp>
+#include <subsystems/InputEvents.hpp>
 
 #include <string_view>
 
@@ -23,5 +23,5 @@ private:
 
 private:
     GLFWwindow *m_window;
-    Events m_event;
+    InputEvents &m_inputEvent;
 };

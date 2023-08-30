@@ -11,7 +11,7 @@ set(SOURCES
     subsystems/App.cpp
     subsystems/Window.cpp
     subsystems/GlApi.cpp
-    subsystems/Events.cpp
+    subsystems/InputEvents.cpp
 )
 
 set(LIBRARIES

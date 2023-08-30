@@ -8,7 +8,7 @@
 
 #include <stdexcept>
 
-Window::Window() : m_window{nullptr} {}
+Window::Window() : m_window{nullptr}, m_inputEvent{InputEvents::Instance()} {}
 
 Window::~Window()
 {
@@ -24,6 +24,7 @@ void Window::Initialize(size_t width, size_t height, const std::string_view titl
 
     GlApi &api = GlApi::Instance();
     m_window = api.CreateWindow(width, height, title);
+    m_inputEvent.SetCurrentWindow(m_window);
 }
 
 void Window::Terminate()
@@ -43,6 +44,6 @@ bool Window::ShouldClose()
 
 void Window::SwapBuffers()
 {
-    m_event.PollEvents();
+    m_inputEvent.PollEvents();
     glfwSwapBuffers(m_window);
 }
