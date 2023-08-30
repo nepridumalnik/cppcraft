@@ -6,4 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
+find_package(glew REQUIRED)
+find_package(glfw3 REQUIRED)
+
 add_subdirectory(src)

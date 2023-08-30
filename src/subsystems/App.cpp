@@ -1,6 +1,6 @@
-#include <subsystems/App.hpp>
+#include <App.hpp>
 
-#include <subsystems/Window.hpp>
+#include <Window.hpp>
 
 #include <stdexcept>
 

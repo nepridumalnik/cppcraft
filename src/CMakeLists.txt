@@ -1,23 +1,21 @@
-find_package(glew REQUIRED)
-find_package(glfw3 REQUIRED)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(subsystems)
 
 set(TARGET cppcraft)
 
 set(SOURCES
     main.cpp
-
-    subsystems/App.cpp
-    subsystems/Window.cpp
-    subsystems/GlApi.cpp
-    subsystems/InputEvents.cpp
 )
 
 set(LIBRARIES
-    GLEW::GLEW
-    glfw
+    subsystems
+)
+
+set(INCLUDE_DIRECTORIES
+    ${CMAKE_SOURCE_DIR}/src
 )
 
 add_executable(${TARGET} ${SOURCES})
 target_link_libraries(${TARGET} PRIVATE ${LIBRARIES})
+target_include_directories(${TARGET} PUBLIC ${INCLUDE_DIRECTORIES})

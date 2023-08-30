@@ -1,6 +1,6 @@
 #pragma once
 
-#include <subsystems/InputEvents.hpp>
+#include <InputEvents.hpp>
 
 #include <string_view>
 

@@ -1,11 +1,12 @@
 #pragma once
 
+#include <macro.hpp>
+
 class App
 {
 public:
-    App() = default;
-
-    void Run();
+    EXPORT_SYMBOLS App() = default;
+    EXPORT_SYMBOLS void Run();
 
 private:
     App(const App &) = delete;

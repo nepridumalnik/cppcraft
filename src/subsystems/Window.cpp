@@ -1,6 +1,6 @@
-#include <subsystems/Window.hpp>
+#include <Window.hpp>
 
-#include <subsystems/GlApi.hpp>
+#include <GlApi.hpp>
 
 #include <GL/glew.h>
 

@@ -1,4 +1,4 @@
-#include <subsystems/InputEvents.hpp>
+#include <InputEvents.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -11,7 +11,7 @@ InputEvents &InputEvents::Instance()
 void InputEvents::SetCurrentWindow(GLFWwindow *window)
 {
     glfwSetKeyCallback(window, keyCallback);
-glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCursorPosCallback(window, cursorPosCallback);
 }
 
