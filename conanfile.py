@@ -22,6 +22,7 @@ class ConanRecipt(ConanFile):
     def requirements(self) -> None:
         self.requires('glew/2.2.0')
         self.requires('glfw/3.3.8')
+        self.requires('libpng/1.6.40')
 
     def build(self) -> None:
         cmake: CMake = CMake(self)

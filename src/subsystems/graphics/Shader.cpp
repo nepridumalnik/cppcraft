@@ -5,21 +5,22 @@
 #include <string>
 #include <stdexcept>
 
-Shader::Shader(size_t id) : m_id{id} {}
+Shader::Shader(uint32_t id) noexcept : m_id{id} {}
 
-Shader::~Shader()
+Shader::~Shader() noexcept
 {
     glDeleteProgram(m_id);
 }
 
-void Shader::Use()
+void Shader::Use() const noexcept
 {
+    glUseProgram(m_id);
 }
 
-size_t Shader::compileShader(int shaderType, const std::string_view source)
+uint32_t Shader::compileShader(int shaderType, const std::string_view source)
 {
     int status = -1;
-    size_t shaderId = glCreateShader(shaderType);
+    uint32_t shaderId = glCreateShader(shaderType);
     const GLchar *sourcePtr = source.data();
 
     glShaderSource(shaderId, 1, &sourcePtr, nullptr);
@@ -44,9 +45,9 @@ std::shared_ptr<Shader> Shader::LoadShader(const std::string_view vShader,
                                            const std::string_view fShader)
 {
     int status = -1;
-    const size_t vertexId = compileShader(GL_VERTEX_SHADER, vShader);
-    const size_t fragmentId = compileShader(GL_FRAGMENT_SHADER, fShader);
-    const size_t programId = glCreateProgram();
+    const uint32_t vertexId = compileShader(GL_VERTEX_SHADER, vShader);
+    const uint32_t fragmentId = compileShader(GL_FRAGMENT_SHADER, fShader);
+    const uint32_t programId = glCreateProgram();
 
     glAttachShader(programId, vertexId);
     glAttachShader(programId, fragmentId);

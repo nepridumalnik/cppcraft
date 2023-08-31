@@ -7,9 +7,11 @@ set(SOURCES
     InputEvents.cpp
 
     graphics/Shader.cpp
+    graphics/Texture.cpp
 )
 
 set(LIBRARIES
+    PNG::PNG
     GLEW::GLEW
     glfw
 )

@@ -16,7 +16,7 @@ GlApi::GlApi()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 }
 
 GlApi::~GlApi()
@@ -30,7 +30,7 @@ GlApi &GlApi::Instance()
     return api;
 }
 
-GLFWwindow *GlApi::CreateWindow(size_t width, size_t height, const std::string_view title)
+GLFWwindow *GlApi::CreateWindow(uint32_t width, uint32_t height, const std::string_view title)
 {
     GLFWwindow *window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
@@ -49,7 +49,7 @@ GLFWwindow *GlApi::CreateWindow(size_t width, size_t height, const std::string_v
     }
 
     glViewport(0, 0, width, height);
-    glClearColor(0, 0, 0, 0);
+    glClearColor(0.6f, 0.62f, 0.65f, 1.0f);
 
     return window;
 }

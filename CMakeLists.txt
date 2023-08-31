@@ -10,6 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
+find_package(PNG REQUIRED)
 find_package(glew REQUIRED)
 find_package(glfw3 REQUIRED)
 

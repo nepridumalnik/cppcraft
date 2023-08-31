@@ -12,7 +12,7 @@ public:
     Window();
     ~Window();
 
-    void Initialize(size_t width, size_t height, const std::string_view title);
+    void Initialize(uint32_t width, uint32_t height, const std::string_view title);
     void Terminate();
     bool ShouldClose();
     void SwapBuffers();

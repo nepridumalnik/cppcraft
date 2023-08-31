@@ -6,10 +6,10 @@
 class Shader
 {
 public:
-    explicit Shader(size_t id);
-    ~Shader();
+    explicit Shader(uint32_t id) noexcept;
+    ~Shader() noexcept;
 
-    void Use();
+    void Use() const noexcept;
 
     static std::shared_ptr<Shader> LoadShader(const std::string_view vShader,
                                               const std::string_view fShader);
@@ -19,8 +19,8 @@ private:
     Shader(const Shader &) = delete;
     void operator=(const Shader &) = delete;
 
-    static size_t compileShader(int shaderType, const std::string_view source);
+    static uint32_t compileShader(int shaderType, const std::string_view source);
 
 private:
-    const size_t m_id;
+    const uint32_t m_id;
 };

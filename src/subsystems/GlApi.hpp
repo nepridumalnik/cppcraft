@@ -9,7 +9,7 @@ class GlApi
 public:
     static GlApi &Instance();
 
-    GLFWwindow *CreateWindow(size_t width, size_t height, const std::string_view title);
+    GLFWwindow *CreateWindow(uint32_t width, uint32_t height, const std::string_view title);
 
 private:
     GlApi();

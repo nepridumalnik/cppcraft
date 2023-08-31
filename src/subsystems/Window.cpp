@@ -15,7 +15,7 @@ Window::~Window()
     Terminate();
 }
 
-void Window::Initialize(size_t width, size_t height, const std::string_view title)
+void Window::Initialize(uint32_t width, uint32_t height, const std::string_view title)
 {
     if (m_window)
     {

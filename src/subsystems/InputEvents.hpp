@@ -29,14 +29,14 @@ private:
 private:
     struct KeyState
     {
-        size_t frame;
+        uint32_t frame;
         bool pressed;
     };
 
 private:
-    std::unordered_map<size_t, KeyState> m_pressedKeys;
-    std::unordered_map<size_t, KeyState> m_clickedButtons;
-    size_t m_currentFrame;
+    std::unordered_map<uint32_t, KeyState> m_pressedKeys;
+    std::unordered_map<uint32_t, KeyState> m_clickedButtons;
+    uint32_t m_currentFrame;
 
     bool m_coursorStarted;
     double m_xpos;
