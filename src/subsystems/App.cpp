@@ -14,9 +14,14 @@
 void App::Run()
 {
     static constexpr float vertices[] = {
-        0, 0, 0, // a
-        1, 0, 0, // b
-        1, 1, 0, // c
+        // x    y     z     u     v
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // 1
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // 2
+        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // 3
+
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f, // 4
+        1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // 5
+        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 6
     };
 
     Window window;
@@ -35,14 +40,16 @@ void App::Run()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void *>(0 * sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-    // glBindBuffer(0, 0);
 
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     while (!window.ShouldClose())
     {
@@ -52,7 +59,7 @@ void App::Run()
         texture->Bind();
 
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
 
         window.SwapBuffers();
