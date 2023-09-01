@@ -132,7 +132,7 @@ uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width,
     imageData.resize(rowBytes * tHeight * sizeof(png_byte));
     rowPointers.resize(tHeight * sizeof(png_bytep));
 
-    for (unsigned int i = 0; i < tHeight; ++i)
+    for (size_t i = 0; i < tHeight; ++i)
     {
         rowPointers[tHeight - 1 - i] = &imageData[i * rowBytes];
     }
