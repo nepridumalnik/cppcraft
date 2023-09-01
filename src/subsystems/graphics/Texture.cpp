@@ -42,8 +42,15 @@ std::shared_ptr<Texture> Texture::LoadTexture(const std::string_view file)
 // Не менять
 uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width, uint32_t &height) noexcept
 {
-    std::unique_ptr<FILE, decltype(&fclose)> fileAutoCloser{nullptr, nullptr};
-    FILE *f = nullptr;
+    struct PngDeleter
+    {
+        PngDeleter() : pngPtr{nullptr}, infoPtr{nullptr}, endInfo{nullptr} {}
+        ~PngDeleter() { png_destroy_read_struct(&pngPtr, &infoPtr, &endInfo); }
+
+        png_structp pngPtr;
+        png_infop infoPtr;
+        png_infop endInfo;
+    };
 
     int isPng = -1;
     int bDepth = -1;
@@ -51,28 +58,37 @@ uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width,
     int rowBytes = -1;
     int alpha = -1;
 
-    png_infop infoPtr = nullptr;
-    png_infop endInfo = nullptr;
-    png_structp pngPtr = nullptr;
+    // ID текстуры в видеопамяти
+    uint32_t texture = 0;
 
     png_uint_32 tWidth = 0;
     png_uint_32 tHeight = 0;
 
-    png_byte header[8]{};
+    // Заголовок PNG формата
+    png_byte header[8];
 
+    // Данные изображения
     std::vector<png_byte> imageData;
     std::vector<png_byte *> rowPointers;
 
-    uint32_t texture = 0;
+    // Автоудалитель данных PNG структур
+    PngDeleter pngDeleter;
 
-    if (!(f = fopen(file.data(), "rb")))
+    // Умный указатель на файл
+    std::unique_ptr<FILE, decltype(&fclose)> filePtr{nullptr, nullptr};
+
     {
-        return 0;
+        FILE *f = nullptr;
+
+        if (!(f = fopen(file.data(), "rb")))
+        {
+            return 0;
+        }
+
+        filePtr = std::unique_ptr<FILE, decltype(&fclose)>(f, fclose);
     }
 
-    fileAutoCloser = std::unique_ptr<FILE, decltype(&fclose)>(f, fclose);
-
-    fread(header, 1, 8, f);
+    fread(header, 1, 8, filePtr.get());
     isPng = !png_sig_cmp(header, 0, 8);
 
     if (!isPng)
@@ -80,43 +96,40 @@ uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width,
         return 0;
     }
 
-    pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+    pngDeleter.pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
-    if (!pngPtr)
+    if (!pngDeleter.pngPtr)
     {
         return 0;
     }
 
-    infoPtr = png_create_info_struct(pngPtr);
+    pngDeleter.infoPtr = png_create_info_struct(pngDeleter.pngPtr);
 
-    if (!infoPtr)
+    if (!pngDeleter.infoPtr)
     {
-        png_destroy_read_struct(&pngPtr, nullptr, nullptr);
         return 0;
     }
 
-    endInfo = png_create_info_struct(pngPtr);
+    pngDeleter.endInfo = png_create_info_struct(pngDeleter.pngPtr);
 
-    if (!endInfo)
+    if (!pngDeleter.endInfo)
     {
-        png_destroy_read_struct(&pngPtr, nullptr, nullptr);
         return 0;
     }
 
-    if (setjmp(png_jmpbuf(pngPtr)))
+    if (setjmp(png_jmpbuf(pngDeleter.pngPtr)))
     {
-        png_destroy_read_struct(&pngPtr, &infoPtr, &endInfo);
         return 0;
     }
 
-    png_init_io(pngPtr, f);
-    png_set_sig_bytes(pngPtr, 8);
-    png_read_info(pngPtr, infoPtr);
-    png_get_IHDR(pngPtr, infoPtr, &tWidth, &tHeight, &bDepth, &colorType, nullptr, nullptr, nullptr);
+    png_init_io(pngDeleter.pngPtr, filePtr.get());
+    png_set_sig_bytes(pngDeleter.pngPtr, 8);
+    png_read_info(pngDeleter.pngPtr, pngDeleter.infoPtr);
+    png_get_IHDR(pngDeleter.pngPtr, pngDeleter.infoPtr, &tWidth, &tHeight, &bDepth, &colorType, nullptr, nullptr, nullptr);
     width = tWidth;
     height = tHeight;
-    png_read_update_info(pngPtr, infoPtr);
-    rowBytes = png_get_rowbytes(pngPtr, infoPtr);
+    png_read_update_info(pngDeleter.pngPtr, pngDeleter.infoPtr);
+    rowBytes = png_get_rowbytes(pngDeleter.pngPtr, pngDeleter.infoPtr);
 
     imageData.resize(rowBytes * tHeight * sizeof(png_byte));
     rowPointers.resize(tHeight * sizeof(png_bytep));
@@ -126,9 +139,9 @@ uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width,
         rowPointers[tHeight - 1 - i] = &imageData[i * rowBytes];
     }
 
-    png_read_image(pngPtr, rowPointers.data());
+    png_read_image(pngDeleter.pngPtr, rowPointers.data());
 
-    switch (png_get_color_type(pngPtr, infoPtr))
+    switch (png_get_color_type(pngDeleter.pngPtr, pngDeleter.infoPtr))
     {
     case PNG_COLOR_TYPE_RGBA:
         alpha = GL_RGBA;
@@ -139,7 +152,6 @@ uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width,
         break;
 
     default:
-        png_destroy_read_struct(&pngPtr, &infoPtr, &endInfo);
         return 0;
     }
 
@@ -150,8 +162,6 @@ uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    png_destroy_read_struct(&pngPtr, &infoPtr, &endInfo);
 
     return texture;
 }
