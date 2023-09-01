@@ -38,8 +38,6 @@ std::shared_ptr<Texture> Texture::LoadTexture(const std::string_view file)
     return std::make_shared<Texture>(textureId, width, height);
 }
 
-// Честно украдено
-// Не менять
 uint32_t Texture::loadTextureToGPU(const std::string_view file, uint32_t &width, uint32_t &height) noexcept
 {
     struct PngDeleter
