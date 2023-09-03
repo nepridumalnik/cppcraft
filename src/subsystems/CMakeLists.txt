@@ -5,6 +5,7 @@ set(SOURCES
     Window.cpp
     GlApi.cpp
     InputEvents.cpp
+    Camera.cpp
 
     graphics/Shader.cpp
     graphics/Texture.cpp

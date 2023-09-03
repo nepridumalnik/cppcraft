@@ -2,14 +2,16 @@
 
 #include <Window.hpp>
 #include <InputEvents.hpp>
+#include <Camera.hpp>
 
 #include <graphics/Shader.hpp>
 #include <graphics/Texture.hpp>
-#include <graphics/Camera.hpp>
 
 #include <generated/shaders.hpp>
 
 #include <GL/glew.h>
+
+#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -58,19 +60,58 @@ void App::Run()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Camera camera{{0.0f, 0.0f, 1.0f}, 0.5f};
+    Camera camera{{0.0f, 0.0f, 1.0f}, glm::radians(90.0f), m_defaultWidth / m_defaultHeight};
+
+    const auto autoChangeAspect = [&camera](uint32_t w, uint32_t h) -> void
+    {
+        camera.SetAspect(w, h);
+    };
+
+    events.AddWindowResizeCallback(autoChangeAspect);
 
     glm::mat4 model{1.0f};
+    model = glm::translate(model, glm::vec3(0.5f, 0, 0));
+
+    float lastTime = glfwGetTime();
+    float delta = 0.0f;
+
+    float camX = 0.0f;
+    float camY = 0.0f;
+
+    static constexpr float speed = 5;
 
     while (!window.ShouldClose())
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        const float currentTime = glfwGetTime();
+        delta = currentTime - lastTime;
+        lastTime = currentTime;
+
         events.PollEvents();
 
+        if (events.KeyPressed(GLFW_KEY_W))
+        {
+            camera.Pos(camera.Pos() + camera.Front() * delta * speed);
+        }
+        if (events.KeyPressed(GLFW_KEY_S))
+        {
+            camera.Pos(camera.Pos() - camera.Front() * delta * speed);
+        }
+        if (events.KeyPressed(GLFW_KEY_D))
+        {
+            camera.Pos(camera.Pos() + camera.Right() * delta * speed);
+        }
+        if (events.KeyPressed(GLFW_KEY_A))
+        {
+            camera.Pos(camera.Pos() - camera.Right() * delta * speed);
+        }
+
         shader->Use();
-        shader->UniformMatrix("matrix", model);
-        shader->UniformMatrix("projview", camera.GetProjection() * camera.GetView());
+        shader->UniformMatrix("model", model);
+
+        glm::mat4 cameraProjview = camera.GetProjection() * camera.GetView();
+        shader->UniformMatrix("projview", cameraProjview);
         texture->Bind();
 
         glBindVertexArray(vao);

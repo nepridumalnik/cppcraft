@@ -10,7 +10,7 @@ InputEvents &InputEvents::Instance()
     return events;
 }
 
-void InputEvents::SetCurrentWindow(GLFWwindow *window)
+void InputEvents::SetCurrentWindow(GLFWwindow *window) noexcept
 {
     glfwSetKeyCallback(window, keyCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
@@ -18,7 +18,7 @@ void InputEvents::SetCurrentWindow(GLFWwindow *window)
     glfwSetWindowSizeCallback(window, windowResizeCallback);
 }
 
-void InputEvents::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void InputEvents::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) noexcept
 {
     InputEvents &events = Instance();
 
@@ -32,7 +32,7 @@ void InputEvents::keyCallback(GLFWwindow *window, int key, int scancode, int act
     }
 }
 
-void InputEvents::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
+void InputEvents::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) noexcept
 {
     InputEvents &events = Instance();
 
@@ -46,7 +46,7 @@ void InputEvents::mouseButtonCallback(GLFWwindow *window, int button, int action
     }
 }
 
-void InputEvents::cursorPosCallback(GLFWwindow *window, double xpos, double ypos)
+void InputEvents::cursorPosCallback(GLFWwindow *window, double xpos, double ypos) noexcept
 {
     InputEvents &events = Instance();
 
@@ -64,19 +64,32 @@ void InputEvents::cursorPosCallback(GLFWwindow *window, double xpos, double ypos
     events.m_y = ypos;
 }
 
-void InputEvents::windowResizeCallback(GLFWwindow *window, int w, int h)
+void InputEvents::windowResizeCallback(GLFWwindow *window, int w, int h) noexcept
 {
     glViewport(0, 0, w, h);
+
+    InputEvents &events = Instance();
+
+    if (events.m_cb)
+    {
+        events.m_cb(w, h);
+    }
 }
 
-bool InputEvents::KeyPressed(int code)
+bool InputEvents::KeyPressed(int code) const noexcept
 {
     InputEvents &events = Instance();
     const auto it = events.m_pressedKeys.find(code);
-    return it != events.m_pressedKeys.end();
+
+    if (it != events.m_pressedKeys.end() && it->second.pressed)
+    {
+        return true;
+    }
+
+    return false;
 }
 
-bool InputEvents::KeyJPressed(int code)
+bool InputEvents::KeyJPressed(int code) const noexcept
 {
     InputEvents &events = Instance();
     const auto it = events.m_pressedKeys.find(code);
@@ -88,8 +101,13 @@ bool InputEvents::KeyJPressed(int code)
     return false;
 }
 
-void InputEvents::PollEvents()
+void InputEvents::PollEvents() noexcept
 {
     ++m_currentFrame;
     glfwPollEvents();
+}
+
+void InputEvents::AddWindowResizeCallback(std::function<void(uint32_t, uint32_t)> cb) noexcept
+{
+    m_cb = cb;
 }

@@ -24,7 +24,11 @@ void Window::Initialize(uint32_t width, uint32_t height, const std::string_view 
     }
 
     GlApi &api = GlApi::Instance();
+
     m_window = api.CreateWindow(width, height, title);
+    m_width = width;
+    m_height = height;
+
     InputEvents::Instance().SetCurrentWindow(m_window);
 }
 
