@@ -1,5 +1,6 @@
 #include <Window.hpp>
 
+#include <InputEvents.hpp>
 #include <GlApi.hpp>
 
 #include <GL/glew.h>
@@ -8,7 +9,7 @@
 
 #include <stdexcept>
 
-Window::Window() : m_window{nullptr}, m_inputEvent{InputEvents::Instance()} {}
+Window::Window() : m_window{nullptr} {}
 
 Window::~Window()
 {
@@ -24,7 +25,7 @@ void Window::Initialize(uint32_t width, uint32_t height, const std::string_view 
 
     GlApi &api = GlApi::Instance();
     m_window = api.CreateWindow(width, height, title);
-    m_inputEvent.SetCurrentWindow(m_window);
+    InputEvents::Instance().SetCurrentWindow(m_window);
 }
 
 void Window::Terminate()
@@ -39,7 +40,7 @@ void Window::Terminate()
 
 bool Window::ShouldClose()
 {
-    if (m_inputEvent.KeyJPressed(GLFW_KEY_ESCAPE))
+    if (InputEvents::Instance().KeyJPressed(GLFW_KEY_ESCAPE))
     {
         return true;
     }
@@ -49,6 +50,5 @@ bool Window::ShouldClose()
 
 void Window::SwapBuffers()
 {
-    m_inputEvent.PollEvents();
     glfwSwapBuffers(m_window);
 }

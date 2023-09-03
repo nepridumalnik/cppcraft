@@ -15,6 +15,7 @@ void InputEvents::SetCurrentWindow(GLFWwindow *window)
     glfwSetKeyCallback(window, keyCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCursorPosCallback(window, cursorPosCallback);
+    glfwSetWindowSizeCallback(window, windowResizeCallback);
 }
 
 void InputEvents::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -61,6 +62,11 @@ void InputEvents::cursorPosCallback(GLFWwindow *window, double xpos, double ypos
 
     events.m_x = xpos;
     events.m_y = ypos;
+}
+
+void InputEvents::windowResizeCallback(GLFWwindow *window, int w, int h)
+{
+    glViewport(0, 0, w, h);
 }
 
 bool InputEvents::KeyPressed(int code)

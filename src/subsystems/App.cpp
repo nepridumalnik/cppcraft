@@ -1,6 +1,7 @@
 #include <App.hpp>
 
 #include <Window.hpp>
+#include <InputEvents.hpp>
 
 #include <graphics/Shader.hpp>
 #include <graphics/Texture.hpp>
@@ -23,6 +24,8 @@ void App::Run()
         1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // 5
         -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 6
     };
+
+    InputEvents &events = InputEvents::Instance();
 
     Window window;
     window.Initialize(m_defaultWidth, m_defaultHeight, "CppCraft");
@@ -54,6 +57,8 @@ void App::Run()
     while (!window.ShouldClose())
     {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        events.PollEvents();
 
         shader->Use();
         texture->Bind();
