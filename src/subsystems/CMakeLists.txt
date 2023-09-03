@@ -11,9 +11,13 @@ set(SOURCES
 )
 
 set(LIBRARIES
-    PNG::PNG
+    # Графика
     GLEW::GLEW
     glfw
+
+    # Вспомогательные
+    PNG::PNG
+    glm::glm
 )
 
 set(INCLUDE_DIRECTORIES

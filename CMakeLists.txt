@@ -13,5 +13,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 find_package(PNG REQUIRED)
 find_package(glew REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(glm REQUIRED)
 
 add_subdirectory(src)

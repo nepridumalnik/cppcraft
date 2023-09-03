@@ -5,10 +5,14 @@
 
 #include <graphics/Shader.hpp>
 #include <graphics/Texture.hpp>
+#include <graphics/Camera.hpp>
 
 #include <generated/shaders.hpp>
 
 #include <GL/glew.h>
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include <stdexcept>
 
@@ -54,6 +58,10 @@ void App::Run()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    Camera camera{{0.0f, 0.0f, 1.0f}, 0.5f};
+
+    glm::mat4 model{1.0f};
+
     while (!window.ShouldClose())
     {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -61,6 +69,8 @@ void App::Run()
         events.PollEvents();
 
         shader->Use();
+        shader->UniformMatrix("matrix", model);
+        shader->UniformMatrix("projview", camera.GetProjection() * camera.GetView());
         texture->Bind();
 
         glBindVertexArray(vao);

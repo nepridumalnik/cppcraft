@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include <string_view>
 #include <memory>
 
@@ -10,6 +12,7 @@ public:
     ~Shader() noexcept;
 
     void Use() const noexcept;
+    void UniformMatrix(const std::string_view name, const glm::mat4 &matrix) const noexcept;
 
     static std::shared_ptr<Shader> LoadShader(const std::string_view vShader,
                                               const std::string_view fShader);

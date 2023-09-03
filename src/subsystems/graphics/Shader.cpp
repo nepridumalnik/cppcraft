@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 #include <stdexcept>
 
@@ -15,6 +17,12 @@ Shader::~Shader() noexcept
 void Shader::Use() const noexcept
 {
     glUseProgram(m_id);
+}
+
+void Shader::UniformMatrix(const std::string_view name, const glm::mat4 &matrix) const noexcept
+{
+    uint32_t transformLoc = glGetUniformLocation(m_id, name.data());
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 uint32_t Shader::compileShader(int shaderType, const std::string_view source)
