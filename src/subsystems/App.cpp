@@ -90,6 +90,10 @@ void App::Run()
 
         events.PollEvents();
 
+        if (events.KeyJPressed(GLFW_KEY_TAB))
+        {
+            window.ToggleCursor();
+        }
         if (events.KeyPressed(GLFW_KEY_W))
         {
             camera.Pos(camera.Pos() + camera.Front() * delta * speed);

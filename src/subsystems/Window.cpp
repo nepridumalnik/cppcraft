@@ -9,7 +9,7 @@
 
 #include <stdexcept>
 
-Window::Window() : m_window{nullptr} {}
+Window::Window() : m_window{nullptr}, m_cursorLocked{true}{}
 
 Window::~Window()
 {
@@ -30,9 +30,11 @@ void Window::Initialize(uint32_t width, uint32_t height, const std::string_view 
     m_height = height;
 
     InputEvents::Instance().SetCurrentWindow(m_window);
+
+    setCursorVisible(m_cursorLocked);
 }
 
-void Window::Terminate()
+void Window::Terminate() noexcept
 {
     if (!m_window)
     {
@@ -42,7 +44,7 @@ void Window::Terminate()
     glfwDestroyWindow(m_window);
 }
 
-bool Window::ShouldClose()
+bool Window::ShouldClose() const noexcept
 {
     if (InputEvents::Instance().KeyJPressed(GLFW_KEY_ESCAPE))
     {
@@ -52,7 +54,18 @@ bool Window::ShouldClose()
     return glfwWindowShouldClose(m_window);
 }
 
-void Window::SwapBuffers()
+void Window::SwapBuffers() const noexcept
 {
     glfwSwapBuffers(m_window);
+}
+
+void Window::ToggleCursor() noexcept
+{
+    m_cursorLocked = !m_cursorLocked;
+    setCursorVisible(m_cursorLocked);
+}
+
+void Window::setCursorVisible(bool flag) noexcept
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, flag ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
